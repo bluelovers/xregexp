@@ -6,6 +6,7 @@
  */
 
 import properties from '../../tools/output/properties';
+import { XRegExpUnicodeData } from './unicode-base';
 
 export default (XRegExp) => {
 
@@ -52,7 +53,7 @@ export default (XRegExp) => {
         throw new ReferenceError('Unicode Base must be loaded before Unicode Properties');
     }
 
-    const unicodeData = properties;
+    const unicodeData = properties as XRegExpUnicodeData[];
 
     // Add non-generated data
     unicodeData.push({

@@ -3,5 +3,17 @@
  * <xregexp.com>
  * Steven Levithan (c) 2008-present MIT License
  */
-declare const _default: (XRegExp: any) => void;
-export default _default;
+import _XRegExp from '../xregexp';
+export declare type XRegExpUnicodeData = {
+    name: string;
+    alias?: string;
+    bmp?: string;
+    isBmpLast?: boolean;
+    astral?: string;
+    inverseOf?: string;
+};
+export declare type XRegExpExtend<T extends typeof _XRegExp> = T & {
+    addUnicodeData(data: XRegExpUnicodeData[]): void;
+    _getUnicodeProperty(name: string): XRegExpUnicodeData;
+};
+export default function <T extends typeof _XRegExp>(XRegExp: T | XRegExpExtend<T>): XRegExpExtend<T>;

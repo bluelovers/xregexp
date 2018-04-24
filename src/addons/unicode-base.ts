@@ -4,7 +4,25 @@
  * Steven Levithan (c) 2008-present MIT License
  */
 
-export default (XRegExp) => {
+import _XRegExp from '../xregexp';
+
+export type XRegExpUnicodeData = {
+	name: string,
+	alias?: string,
+	bmp?: string,
+
+	isBmpLast?: boolean,
+	astral?: string,
+	inverseOf?: string,
+}
+
+export type XRegExpExtend<T extends typeof _XRegExp> = T & {
+	addUnicodeData(data: XRegExpUnicodeData[]): void,
+	_getUnicodeProperty(name: string): XRegExpUnicodeData,
+}
+
+export default function <T extends typeof _XRegExp>(XRegExp: T | XRegExpExtend<T>)
+{
 
     /**
      * Adds base support for Unicode matching:
@@ -206,6 +224,7 @@ export default (XRegExp) => {
      * }]);
      * XRegExp('\\p{XDigit}:\\p{Hexadecimal}+').test('0:3D'); // -> true
      */
+	// @ts-ignore
     XRegExp.addUnicodeData = (data) => {
         const ERR_NO_NAME = 'Unicode token requires name';
         const ERR_NO_DATA = 'Unicode token has no character data ';
@@ -249,8 +268,11 @@ export default (XRegExp) => {
      * the future. It is meant for userland code that wishes to reuse the (large) internal Unicode
      * structures set up by XRegExp.
      */
+    // @ts-ignore
     XRegExp._getUnicodeProperty = (name) => {
         const slug = normalize(name);
         return unicode[slug];
     };
+
+    return XRegExp as XRegExpExtend<T>
 };

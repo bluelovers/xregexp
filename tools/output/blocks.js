@@ -1,4 +1,6 @@
-module.exports = [
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = [
     {
         'name': 'InAdlam',
         'astral': '\uD83A[\uDD00-\uDD5F]'

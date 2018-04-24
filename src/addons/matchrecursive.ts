@@ -4,7 +4,19 @@
  * Steven Levithan (c) 2009-present MIT License
  */
 
-export default (XRegExp) => {
+import _XRegExp from '../xregexp';
+
+export type XRegExpExtend<T extends typeof _XRegExp> = T & {
+	matchRecursive(str: string, left: string, right: string, flags?: string, options?): Array<{
+		name: string,
+		value: string,
+		start: number,
+		end: number,
+	}>
+}
+
+export default function <T extends typeof _XRegExp>(XRegExp: T | XRegExpExtend<T>)
+{
 
     /**
      * Returns a match detail object composed of the provided values.
@@ -70,7 +82,7 @@ export default (XRegExp) => {
      * XRegExp.matchRecursive(str, '<', '>', 'gy');
      * // -> ['1', '<<2>>', '3']
      */
-    XRegExp.matchRecursive = (str, left, right, flags, options) => {
+	(XRegExp as XRegExpExtend<T>).matchRecursive = (str, left, right, flags, options) => {
         flags = flags || '';
         options = options || {};
         const global = flags.includes('g');
@@ -194,4 +206,6 @@ export default (XRegExp) => {
 
         return output;
     };
-};
+
+    return XRegExp as XRegExpExtend<T>;
+}

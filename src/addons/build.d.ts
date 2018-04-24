@@ -3,5 +3,12 @@
  * <xregexp.com>
  * Steven Levithan (c) 2012-present MIT License
  */
-declare const _default: (XRegExp: any) => void;
-export default _default;
+import _XRegExp from '../xregexp';
+export declare type XRegExpBuildSub = {
+    [key: string]: string | RegExp;
+};
+export declare type XRegExpExtend<T extends typeof _XRegExp> = T & {
+    tag(flags: string): XRegExpExtend<T>;
+    build(pattern: string, subs: XRegExpBuildSub, flags: string): XRegExpExtend<T>;
+};
+export default function <T extends typeof _XRegExp = typeof _XRegExp>(XRegExp: T | XRegExpExtend<T>): XRegExpExtend<T>;

@@ -5,7 +5,7 @@
  * Steven Levithan (c) 2012-present MIT License
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = (XRegExp) => {
+function default_1(XRegExp) {
     const REGEX_DATA = 'xregexp';
     const subParts = /(\()(?!\?)|\\([1-9]\d*)|\\[\s\S]|\[(?:[^\\\]]|\\[\s\S])*\]/g;
     const parts = XRegExp.union([/\({{([\w$]+)}}\)|{{([\w$]+)}}/, subParts], 'g', {
@@ -86,9 +86,11 @@ exports.default = (XRegExp) => {
      * time.test('10:59'); // -> true
      * XRegExp.exec('10:59', time).minutes; // -> '59'
      */
+    // @ts-ignore
     XRegExp.tag = (flags) => (literals, ...substitutions) => {
         const subpatterns = substitutions.map(interpolate).reduce(reduceToSubpatternsObject, {});
         const pattern = literals.raw.map(embedSubpatternAfter).join('');
+        // @ts-ignore
         return XRegExp.build(pattern, subpatterns, flags);
     };
     /**
@@ -116,6 +118,7 @@ exports.default = (XRegExp) => {
      * time.test('10:59'); // -> true
      * XRegExp.exec('10:59', time).minutes; // -> '59'
      */
+    // @ts-ignore
     XRegExp.build = (pattern, subs, flags) => {
         flags = flags || '';
         // Used with `asXRegExp` calls for `pattern` and subpatterns in `subs`, to work around how
@@ -219,4 +222,7 @@ exports.default = (XRegExp) => {
         });
         return XRegExp(output, flags);
     };
-};
+    return XRegExp;
+}
+exports.default = default_1;
+;

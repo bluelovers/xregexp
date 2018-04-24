@@ -5,7 +5,7 @@
  * Steven Levithan (c) 2009-present MIT License
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = (XRegExp) => {
+function default_1(XRegExp) {
     /**
      * Returns a match detail object composed of the provided values.
      *
@@ -191,4 +191,6 @@ exports.default = (XRegExp) => {
         }
         return output;
     };
-};
+    return XRegExp;
+}
+exports.default = default_1;

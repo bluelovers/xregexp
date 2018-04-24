@@ -5,7 +5,7 @@
  * Steven Levithan (c) 2008-present MIT License
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = (XRegExp) => {
+function default_1(XRegExp) {
     /**
      * Adds base support for Unicode matching:
      * - Adds syntax `\p{..}` for matching Unicode tokens. Tokens can be inverted using `\P{..}` or
@@ -173,6 +173,7 @@ exports.default = (XRegExp) => {
      * }]);
      * XRegExp('\\p{XDigit}:\\p{Hexadecimal}+').test('0:3D'); // -> true
      */
+    // @ts-ignore
     XRegExp.addUnicodeData = (data) => {
         const ERR_NO_NAME = 'Unicode token requires name';
         const ERR_NO_DATA = 'Unicode token has no character data ';
@@ -213,8 +214,12 @@ exports.default = (XRegExp) => {
      * the future. It is meant for userland code that wishes to reuse the (large) internal Unicode
      * structures set up by XRegExp.
      */
+    // @ts-ignore
     XRegExp._getUnicodeProperty = (name) => {
         const slug = normalize(name);
         return unicode[slug];
     };
-};
+    return XRegExp;
+}
+exports.default = default_1;
+;
