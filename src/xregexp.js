@@ -708,16 +708,16 @@ exports.XRegExp = XRegExp;
  *   // The regex is compiled once only
  * }
      */
-    XRegExp.cache = (pattern, flags) => {
+    function cache(pattern, flags) {
         if (!exports.regexCache[pattern]) {
             exports.regexCache[pattern] = {};
         }
         return exports.regexCache[pattern][flags] || (exports.regexCache[pattern][flags] = XRegExp(pattern, flags));
-    };
-    let cache;
+    }
+    XRegExp.cache = cache;
     (function (cache) {
         // Intentionally undocumented; used in tests
-        cache.flush = (cacheName) => {
+        function flush(cacheName) {
             if (cacheName === 'patterns') {
                 // Flush the pattern cache used by the `XRegExp` constructor
                 exports.patternCache = {};
@@ -726,7 +726,8 @@ exports.XRegExp = XRegExp;
                 // Flush the regex cache populated by `XRegExp.cache`
                 exports.regexCache = {};
             }
-        };
+        }
+        cache.flush = flush;
     })(cache = XRegExp.cache || (XRegExp.cache = {}));
     /**
      * Escapes any regular expression metacharacters, for use when matching literal strings. The result

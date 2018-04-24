@@ -76,7 +76,7 @@ export declare const registeredFlags: {
  *   skipping some operations like attaching `XRegExp.prototype` properties.
  * @returns {RegExp} Augmented regex.
  */
-export declare function augment(regex: any, captureNames: any, xSource: any, xFlags: any, isInternalOnly: any): any;
+export declare function augment(regex: any, captureNames: any, xSource: any, xFlags: any, isInternalOnly?: boolean): any;
 /**
  * Removes any duplicate characters from the provided string.
  *
@@ -103,7 +103,7 @@ export declare function clipDuplicates(str: any): any;
  *   - `source` {String} Overrides `<regex>.source`, for special cases.
  * @returns {RegExp} Copy of the provided regex, possibly with modified flags.
  */
-export declare function copyRegex(regex: any, options: any): any;
+export declare function copyRegex(regex: any, options?: any): any;
 /**
  * Converts hexadecimal to decimal.
  *
@@ -276,7 +276,7 @@ export declare function toObject(value: any): any;
  * // have fresh `lastIndex` properties (set to zero).
  * XRegExp(/regex/);
  */
-export declare function XRegExp(pattern: any, flags: any): any;
+export declare function XRegExp(pattern: any, flags?: string): any;
 export declare namespace XRegExp {
     const prototype: RegExp;
     /**
@@ -357,9 +357,9 @@ export declare namespace XRegExp {
  *   // The regex is compiled once only
  * }
      */
-    const cache: (pattern: any, flags: any) => any;
+    function cache(pattern: string, flags: string): any;
     namespace cache {
-        const flush: (cacheName: any) => void;
+        function flush(cacheName: string): void;
     }
     /**
      * Escapes any regular expression metacharacters, for use when matching literal strings. The result
@@ -403,7 +403,7 @@ export declare namespace XRegExp {
  * }
      * // result -> ['2', '3', '4']
      */
-    const exec: (str: any, regex: any, pos: any, sticky: any) => any;
+    const exec: (str: any, regex: any, pos: any, sticky?: string | boolean) => any;
     /**
      * Executes a provided function once per regex match. Searches always start at the beginning of the
      * string and continue until the end, regardless of the state of the regex's `global` property and

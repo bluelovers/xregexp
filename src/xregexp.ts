@@ -103,7 +103,7 @@ export const registeredFlags = {
  *   skipping some operations like attaching `XRegExp.prototype` properties.
  * @returns {RegExp} Augmented regex.
  */
-export function augment(regex, captureNames, xSource, xFlags, isInternalOnly)
+export function augment(regex, captureNames, xSource, xFlags, isInternalOnly?: boolean)
 {
     regex[REGEX_DATA] = {
         captureNames
@@ -167,7 +167,7 @@ export function clipDuplicates(str)
  *   - `source` {String} Overrides `<regex>.source`, for special cases.
  * @returns {RegExp} Copy of the provided regex, possibly with modified flags.
  */
-export function copyRegex(regex, options)
+export function copyRegex(regex, options?)
 {
     if (!XRegExp.isRegExp(regex))
     {
@@ -598,7 +598,7 @@ export function toObject(value)
  * // have fresh `lastIndex` properties (set to zero).
  * XRegExp(/regex/);
  */
-export function XRegExp(pattern, flags)
+export function XRegExp(pattern, flags?: string)
 {
     if (XRegExp.isRegExp(pattern))
     {
@@ -834,7 +834,7 @@ export namespace XRegExp
  *   // The regex is compiled once only
  * }
      */
-    export const cache = (pattern, flags) =>
+    export function cache(pattern: string, flags: string)
     {
         if (!regexCache[pattern])
         {
@@ -843,12 +843,12 @@ export namespace XRegExp
         return regexCache[pattern][flags] || (
             regexCache[pattern][flags] = XRegExp(pattern, flags)
         );
-    };
+    }
 
     export namespace cache
     {
         // Intentionally undocumented; used in tests
-        export const flush = (cacheName) =>
+        export function flush(cacheName: string)
         {
             if (cacheName === 'patterns')
             {
@@ -860,7 +860,7 @@ export namespace XRegExp
                 // Flush the regex cache populated by `XRegExp.cache`
                 regexCache = {};
             }
-        };
+        }
     }
 
     /**
@@ -906,7 +906,7 @@ export namespace XRegExp
  * }
      * // result -> ['2', '3', '4']
      */
-    export const exec = (str, regex, pos, sticky) =>
+    export const exec = (str, regex, pos, sticky?: boolean | string) =>
     {
         let cacheKey = 'g';
         let addY = false;
