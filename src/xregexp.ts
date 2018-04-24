@@ -16,14 +16,14 @@
 // ==--------------------------==
 
 // Property name used for extended regex instance data
-const REGEX_DATA = 'xregexp';
+export const REGEX_DATA = 'xregexp';
 // Optional features that can be installed and uninstalled
-const features = {
+export const features = {
     astral: false,
     namespacing: false
 };
 // Native methods to use and restore ('native' is an ES3 reserved keyword)
-const nativ = {
+export const nativ = {
     exec: RegExp.prototype.exec,
     test: RegExp.prototype.test,
     match: String.prototype.match,
@@ -31,33 +31,33 @@ const nativ = {
     split: String.prototype.split
 };
 // Storage for fixed/extended native methods
-const fixed = {};
+export const fixed = {};
 // Storage for regexes cached by `XRegExp.cache`
-let regexCache = {};
+export let regexCache = {};
 // Storage for pattern details cached by the `XRegExp` constructor
-let patternCache = {};
+export let patternCache = {};
 // Storage for regex syntax tokens added internally or by `XRegExp.addToken`
-const tokens = [];
+export const tokens = [];
 // Token scopes
-const defaultScope = 'default';
-const classScope = 'class';
+export const defaultScope = 'default';
+export const classScope = 'class';
 // Regexes that match native regex syntax, including octals
-const nativeTokens = {
+export const nativeTokens = {
     // Any native multicharacter token in default scope, or any single character
     'default': /\\(?:0(?:[0-3][0-7]{0,2}|[4-7][0-7]?)?|[1-9]\d*|x[\dA-Fa-f]{2}|u(?:[\dA-Fa-f]{4}|{[\dA-Fa-f]+})|c[A-Za-z]|[\s\S])|\(\?(?:[:=!]|<[=!])|[?*+]\?|{\d+(?:,\d*)?}\??|[\s\S]/,
     // Any native multicharacter token in character class scope, or any single character
     'class': /\\(?:[0-3][0-7]{0,2}|[4-7][0-7]?|x[\dA-Fa-f]{2}|u(?:[\dA-Fa-f]{4}|{[\dA-Fa-f]+})|c[A-Za-z]|[\s\S])|[\s\S]/
 };
 // Any backreference or dollar-prefixed character in replacement strings
-const replacementToken = /\$(?:{([\w$]+)}|<([\w$]+)>|(\d\d?|[\s\S]))/g;
+export const replacementToken = /\$(?:{([\w$]+)}|<([\w$]+)>|(\d\d?|[\s\S]))/g;
 // Check for correct `exec` handling of nonparticipating capturing groups
-const correctExecNpcg = nativ.exec.call(/()??/, '')[1] === undefined;
+export const correctExecNpcg = nativ.exec.call(/()??/, '')[1] === undefined;
 // Check for ES6 `flags` prop support
-const hasFlagsProp = /x/.flags !== undefined;
+export const hasFlagsProp = /x/.flags !== undefined;
 // Shortcut to `Object.prototype.toString`
-const {toString} = {};
+export const {toString} = {};
 
-function hasNativeFlag(flag) {
+export function hasNativeFlag(flag) {
     // Can't check based on the presence of properties/getters since browsers might support such
     // properties even when they don't support the corresponding flag in regex construction (tested
     // in Chrome 48, where `'unicode' in /x/` is true but trying to construct a regex with flag `u`
@@ -73,11 +73,11 @@ function hasNativeFlag(flag) {
     return isSupported;
 }
 // Check for ES6 `u` flag support
-const hasNativeU = hasNativeFlag('u');
+export const hasNativeU = hasNativeFlag('u');
 // Check for ES6 `y` flag support
-const hasNativeY = hasNativeFlag('y');
+export const hasNativeY = hasNativeFlag('y');
 // Tracker for known flags, including addon flags
-const registeredFlags = {
+export const registeredFlags = {
     g: true,
     i: true,
     m: true,
@@ -98,7 +98,7 @@ const registeredFlags = {
  *   skipping some operations like attaching `XRegExp.prototype` properties.
  * @returns {RegExp} Augmented regex.
  */
-function augment(regex, captureNames, xSource, xFlags, isInternalOnly) {
+export function augment(regex, captureNames, xSource, xFlags, isInternalOnly) {
     regex[REGEX_DATA] = {
         captureNames
     };
@@ -133,7 +133,7 @@ function augment(regex, captureNames, xSource, xFlags, isInternalOnly) {
  * @param {String} str String to remove duplicate characters from.
  * @returns {String} String with any duplicate characters removed.
  */
-function clipDuplicates(str) {
+export function clipDuplicates(str) {
     return nativ.replace.call(str, /([\s\S])(?=[\s\S]*\1)/g, '');
 }
 
@@ -155,7 +155,7 @@ function clipDuplicates(str) {
  *   - `source` {String} Overrides `<regex>.source`, for special cases.
  * @returns {RegExp} Copy of the provided regex, possibly with modified flags.
  */
-function copyRegex(regex, options) {
+export function copyRegex(regex, options) {
     if (!XRegExp.isRegExp(regex)) {
         throw new TypeError('Type RegExp expected');
     }
@@ -216,7 +216,7 @@ function copyRegex(regex, options) {
  * @param {String} hex
  * @returns {Number}
  */
-function dec(hex) {
+export function dec(hex) {
     return parseInt(hex, 16);
 }
 
@@ -231,7 +231,7 @@ function dec(hex) {
  * @param {String} flags Flags arg of `XRegExp.addToken` handler
  * @returns {String} Either '' or '(?:)', depending on which is needed in the context of the match.
  */
-function getContextualTokenSeparator(match, scope, flags) {
+export function getContextualTokenSeparator(match, scope, flags) {
     if (
         // No need to separate tokens if at the beginning or end of a group
         match.input[match.index - 1] === '(' ||
@@ -270,7 +270,7 @@ function getContextualTokenSeparator(match, scope, flags) {
  * @param {RegExp} regex Regex to check.
  * @returns {String} Native flags in use.
  */
-function getNativeFlags(regex) {
+export function getNativeFlags(regex) {
     return hasFlagsProp ?
         regex.flags :
         // Explicitly using `RegExp.prototype.toString` (rather than e.g. `String` or concatenation
@@ -286,7 +286,7 @@ function getNativeFlags(regex) {
  * @param {RegExp} regex Regex to check.
  * @returns {Boolean} Whether the regex uses named capture.
  */
-function hasNamedCapture(regex) {
+export function hasNamedCapture(regex) {
     return !!(regex[REGEX_DATA] && regex[REGEX_DATA].captureNames);
 }
 
@@ -297,7 +297,7 @@ function hasNamedCapture(regex) {
  * @param {Number|String} dec
  * @returns {String}
  */
-function hex(dec) {
+export function hex(dec) {
     return parseInt(dec, 10).toString(16);
 }
 
@@ -310,7 +310,7 @@ function hex(dec) {
  * @param {String} flags Flags used by the pattern.
  * @returns {Boolean} Whether the next nonignorable token is a quantifier.
  */
-function isQuantifierNext(pattern, pos, flags) {
+export function isQuantifierNext(pattern, pos, flags) {
     const inlineCommentPattern = '\\(\\?#[^)]*\\)';
     const lineCommentPattern = '#[^#\\n]*';
     const quantifierPattern = '[?*+]|{\\d+(?:,\\d*)?}';
@@ -332,7 +332,7 @@ function isQuantifierNext(pattern, pos, flags) {
  * @param {String} type Type to check for, in TitleCase.
  * @returns {Boolean} Whether the object matches the type.
  */
-function isType(value, type) {
+export function isType(value, type) {
     return toString.call(value) === `[object ${type}]`;
 }
 
@@ -343,7 +343,7 @@ function isType(value, type) {
  * @param {String} str
  * @returns {String}
  */
-function pad4(str) {
+export function pad4(str) {
     while (str.length < 4) {
         str = `0${str}`;
     }
@@ -359,7 +359,7 @@ function pad4(str) {
  * @param {String} flags Any combination of flags.
  * @returns {Object} Object with properties `pattern` and `flags`.
  */
-function prepareFlags(pattern, flags) {
+export function prepareFlags(pattern, flags) {
     // Recent browsers throw on duplicate flags, so copy this behavior for nonnative flags
     if (clipDuplicates(flags) !== flags) {
         throw new SyntaxError(`Invalid duplicate regex flag ${flags}`);
@@ -395,7 +395,7 @@ function prepareFlags(pattern, flags) {
  * @param {String|Object} value Value to convert to an options object.
  * @returns {Object} Options object.
  */
-function prepareOptions(value) {
+export function prepareOptions(value) {
     const options = {};
 
     if (isType(value, 'String')) {
@@ -415,7 +415,7 @@ function prepareOptions(value) {
  * @private
  * @param {String} flag Single-character flag to register.
  */
-function registerFlag(flag) {
+export function registerFlag(flag) {
     if (!/^[\w$]$/.test(flag)) {
         throw new Error('Flag must be a single character A-Za-z0-9_$');
     }
@@ -435,7 +435,7 @@ function registerFlag(flag) {
  * @param {Object} context Context object to use for token handler functions.
  * @returns {Object} Object with properties `matchLength`, `output`, and `reparse`; or `null`.
  */
-function runTokens(pattern, flags, pos, scope, context) {
+export function runTokens(pattern, flags, pos, scope, context) {
     let i = tokens.length;
     const leadChar = pattern[pos];
     let result = null;
@@ -476,7 +476,7 @@ function runTokens(pattern, flags, pos, scope, context) {
  * @private
  * @param {Boolean} on `true` to enable; `false` to disable.
  */
-function setAstral(on) {
+export function setAstral(on) {
     features.astral = on;
 }
 
@@ -487,7 +487,7 @@ function setAstral(on) {
  * @private
  * @param {Boolean} on `true` to enable; `false` to disable.
  */
-function setNamespacing(on) {
+export function setNamespacing(on) {
     features.namespacing = on;
 }
 
@@ -499,7 +499,7 @@ function setNamespacing(on) {
  * @param {*} value Object to check and return.
  * @returns {*} The provided object.
  */
-function toObject(value) {
+export function toObject(value) {
     // null or undefined
     if (value == null) {
         throw new TypeError('Cannot convert null or undefined to object');
@@ -546,7 +546,7 @@ function toObject(value) {
  * // have fresh `lastIndex` properties (set to zero).
  * XRegExp(/regex/);
  */
-function XRegExp(pattern, flags) {
+export function XRegExp(pattern, flags) {
     if (XRegExp.isRegExp(pattern)) {
         if (flags !== undefined) {
             throw new TypeError('Cannot supply flags when copying a RegExp');

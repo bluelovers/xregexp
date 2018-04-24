@@ -2,45 +2,39 @@
   "name": "xregexp",
   "version": "4.1.1",
   "description": "Extended regular expressions",
-  "homepage": "http://xregexp.com/",
-  "author": "Steven Levithan <steves_list@hotmail.com>",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/slevithan/xregexp.git"
-  },
   "keywords": [
     "regex",
     "regexp",
     "regular expression",
     "unicode"
   ],
-  "main": "./lib",
-  "files": [
-    "src",
-    "lib",
-    "tools/output",
-    "xregexp-all.js"
-  ],
+  "homepage": "https://github.com/bluelovers/xregexp#readme",
+  "bugs": {
+    "url": "https://github.com/bluelovers/xregexp/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bluelovers/xregexp.git"
+  },
+  "license": "MIT",
+  "author": "Steven Levithan <steves_list@hotmail.com>",
+  "main": "./src",
+  "directories": {
+    "test": "tests"
+  },
   "scripts": {
-    "lint": "eslint .",
     "babel": "babel src -d lib",
-    "build-unicode-data": "node tools/scripts/block-regex.js && node tools/scripts/category-regex.js && node tools/scripts/property-regex.js && node tools/scripts/script-regex.js",
     "prebuild": "npm run build-unicode-data && npm run lint && npm run babel",
     "build": "browserify lib/index.js --standalone XRegExp > xregexp-all.js",
+    "build-unicode-data": "node tools/scripts/block-regex.js && node tools/scripts/category-regex.js && node tools/scripts/property-regex.js && node tools/scripts/script-regex.js",
+    "lint": "eslint .",
+    "prepublish": "npm test",
     "pretest": "npm run build",
     "test": "jasmine JASMINE_CONFIG_PATH=tests/jasmine.json",
-    "test-saucelabs": "npm run pretest && zuul tests/spec/*.js",
     "test-browser": "npm run test-saucelabs -- --local --open",
-    "prepublish": "npm test"
+    "test-saucelabs": "npm run pretest && zuul tests/spec/*.js"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-array-includes": "^2.0.3",
-    "babel-plugin-transform-xregexp": "^0.0.4",
-    "babel-preset-env": "^1.4.0",
-    "browserify": "^12.0.1",
     "eslint": "^3.19.0",
     "jasmine": "^2.5.3",
     "jsesc": "^2.5.1",
