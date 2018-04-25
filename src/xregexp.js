@@ -124,7 +124,10 @@ exports.XRegExp = XRegExp;
 (function (XRegExp) {
     // Add `RegExp.prototype` to the prototype chain
     //export const prototype = new RegExp();
-    XRegExp.prototype = RegExp.prototype;
+    //export const prototype = RegExp.prototype;
+    // @ts-ignore
+    //export const prototype = new XRegExpObject() as typeof RegExp.prototype;
+    XRegExp.prototype = new RegExp();
     // ==--------------------------==
     // Public properties
     // ==--------------------------==

@@ -178,7 +178,10 @@ export namespace XRegExp
 {
 	// Add `RegExp.prototype` to the prototype chain
 	//export const prototype = new RegExp();
-	export const prototype = RegExp.prototype;
+	//export const prototype = RegExp.prototype;
+	// @ts-ignore
+	//export const prototype = new XRegExpObject() as typeof RegExp.prototype;
+	export const prototype = new RegExp() as typeof RegExp.prototype;
 
 // ==--------------------------==
 // Public properties
