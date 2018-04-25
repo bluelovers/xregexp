@@ -3,6 +3,8 @@
  */
 
 import _XRegExp from './src/xregexp';
+import XRegExpObject from './src/class';
+
 import _XRegExp2 from './src';
 
 const _XRegExp3 = _XRegExp2 as typeof _XRegExp2 & {

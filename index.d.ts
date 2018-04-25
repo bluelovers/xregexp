@@ -2,11 +2,12 @@
  * Created by user on 2018/4/25/025.
  */
 import _XRegExp from './src/xregexp';
+import XRegExpObject from './src/class';
 declare const XRegExp: typeof _XRegExp & {
-    tag(flags: string): typeof _XRegExp & any;
+    tag(flags: string): XRegExpObject;
     build(pattern: string, subs: {
         [key: string]: string | RegExp;
-    }, flags: string): typeof _XRegExp & any;
+    }, flags: string): XRegExpObject;
 } & {
     matchRecursive(str: string, left: string, right: string, flags?: string, options?: any): {
         name: string;
@@ -33,10 +34,10 @@ declare const XRegExp: typeof _XRegExp & {
     };
 } & {
     XRegExp: typeof _XRegExp & {
-        tag(flags: string): typeof _XRegExp & any;
+        tag(flags: string): XRegExpObject;
         build(pattern: string, subs: {
             [key: string]: string | RegExp;
-        }, flags: string): typeof _XRegExp & any;
+        }, flags: string): XRegExpObject;
     } & {
         matchRecursive(str: string, left: string, right: string, flags?: string, options?: any): {
             name: string;
@@ -64,10 +65,10 @@ declare const XRegExp: typeof _XRegExp & {
     };
 } & {
     default: typeof _XRegExp & {
-        tag(flags: string): typeof _XRegExp & any;
+        tag(flags: string): XRegExpObject;
         build(pattern: string, subs: {
             [key: string]: string | RegExp;
-        }, flags: string): typeof _XRegExp & any;
+        }, flags: string): XRegExpObject;
     } & {
         matchRecursive(str: string, left: string, right: string, flags?: string, options?: any): {
             name: string;
@@ -94,10 +95,10 @@ declare const XRegExp: typeof _XRegExp & {
         };
     } & {
         XRegExp: typeof _XRegExp & {
-            tag(flags: string): typeof _XRegExp & any;
+            tag(flags: string): XRegExpObject;
             build(pattern: string, subs: {
                 [key: string]: string | RegExp;
-            }, flags: string): typeof _XRegExp & any;
+            }, flags: string): XRegExpObject;
         } & {
             matchRecursive(str: string, left: string, right: string, flags?: string, options?: any): {
                 name: string;
