@@ -1096,7 +1096,9 @@ export namespace XRegExp
      * XRegExp.isRegExp(RegExp('^', 'm')); // -> true
      * XRegExp.isRegExp(XRegExp('(?s).')); // -> true
      */
-    export const isRegExp: typeof XRegExpObject.isRegExp = (value) => toString.call(value) === '[object RegExp]'; // isType(value, 'RegExp');
+    export const isRegExp = XRegExpObject.isRegExp; // isType(value, 'RegExp');
+
+    export const isXRegExpObject = XRegExpObject.isXRegExpObject;
 
     /**
      * Returns the first matched string, or in global mode, an array containing all matched strings.

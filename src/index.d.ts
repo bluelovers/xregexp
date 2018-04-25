@@ -1,9 +1,10 @@
 import _XRegExp from './xregexp';
+import XRegExpObject from './class';
 export declare const XRegExp: typeof _XRegExp & {
-    tag(flags: string): typeof _XRegExp & any;
+    tag(flags: string): XRegExpObject;
     build(pattern: string, subs: {
         [key: string]: string | RegExp;
-    }, flags: string): typeof _XRegExp & any;
+    }, flags: string): XRegExpObject;
 } & {
     matchRecursive(str: string, left: string, right: string, flags?: string, options?: any): {
         name: string;

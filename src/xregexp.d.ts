@@ -485,6 +485,7 @@ export declare namespace XRegExp {
      * XRegExp.isRegExp(XRegExp('(?s).')); // -> true
      */
     const isRegExp: typeof XRegExpObject.isRegExp;
+    const isXRegExpObject: typeof XRegExpObject.isXRegExpObject;
     /**
      * Returns the first matched string, or in global mode, an array containing all matched strings.
      * This is essentially a more convenient re-implementation of `String.prototype.match` that gives

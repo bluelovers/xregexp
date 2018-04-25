@@ -1,4 +1,5 @@
 import _XRegExp from './xregexp';
+import XRegExpObject from './class';
 
 import build from './addons/build';
 import matchRecursive from './addons/matchrecursive';

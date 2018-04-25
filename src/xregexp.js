@@ -925,7 +925,8 @@ exports.XRegExp = XRegExp;
      * XRegExp.isRegExp(RegExp('^', 'm')); // -> true
      * XRegExp.isRegExp(XRegExp('(?s).')); // -> true
      */
-    XRegExp.isRegExp = (value) => exports.toString.call(value) === '[object RegExp]'; // isType(value, 'RegExp');
+    XRegExp.isRegExp = class_1.default.isRegExp; // isType(value, 'RegExp');
+    XRegExp.isXRegExpObject = class_1.default.isXRegExpObject;
     /**
      * Returns the first matched string, or in global mode, an array containing all matched strings.
      * This is essentially a more convenient re-implementation of `String.prototype.match` that gives
