@@ -6,7 +6,8 @@
     "regex",
     "regexp",
     "regular expression",
-    "unicode"
+    "unicode",
+    "xregexp"
   ],
   "homepage": "https://github.com/bluelovers/xregexp#readme",
   "bugs": {
@@ -23,8 +24,8 @@
     "test": "tests"
   },
   "scripts": {
-    "_prebuild": "npm run build-unicode-data && npm run lint && npm run babel",
     "_build": "browserify lib/index.js --standalone XRegExp > xregexp-all.js",
+    "_prebuild": "npm run build-unicode-data && npm run lint && npm run babel",
     "build-unicode-data": "node tools/scripts/block-regex.js && node tools/scripts/category-regex.js && node tools/scripts/property-regex.js && node tools/scripts/script-regex.js",
     "test": "jasmine JASMINE_CONFIG_PATH=tests/jasmine.json"
   },
