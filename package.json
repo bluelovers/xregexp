@@ -23,16 +23,10 @@
     "test": "tests"
   },
   "scripts": {
-    "babel": "babel src -d lib",
-    "prebuild": "npm run build-unicode-data && npm run lint && npm run babel",
-    "build": "browserify lib/index.js --standalone XRegExp > xregexp-all.js",
+    "_prebuild": "npm run build-unicode-data && npm run lint && npm run babel",
+    "_build": "browserify lib/index.js --standalone XRegExp > xregexp-all.js",
     "build-unicode-data": "node tools/scripts/block-regex.js && node tools/scripts/category-regex.js && node tools/scripts/property-regex.js && node tools/scripts/script-regex.js",
-    "lint": "eslint .",
-    "prepublish": "npm test",
-    "pretest": "npm run build",
-    "test": "jasmine JASMINE_CONFIG_PATH=tests/jasmine.json",
-    "test-browser": "npm run test-saucelabs -- --local --open",
-    "test-saucelabs": "npm run pretest && zuul tests/spec/*.js"
+    "test": "jasmine JASMINE_CONFIG_PATH=tests/jasmine.json"
   },
   "devDependencies": {
     "eslint": "^3.19.0",

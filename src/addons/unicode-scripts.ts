@@ -7,20 +7,22 @@
 
 import scripts from '../../tools/output/scripts';
 
-export default (XRegExp) => {
+export default (XRegExp) =>
+{
 
-    /**
-     * Adds support for all Unicode scripts. E.g., `\p{Latin}`. Token names are case insensitive,
-     * and any spaces, hyphens, and underscores are ignored.
-     *
-     * Uses Unicode 10.0.0.
-     *
-     * @requires XRegExp, Unicode Base
-     */
+	/**
+	 * Adds support for all Unicode scripts. E.g., `\p{Latin}`. Token names are case insensitive,
+	 * and any spaces, hyphens, and underscores are ignored.
+	 *
+	 * Uses Unicode 10.0.0.
+	 *
+	 * @requires XRegExp, Unicode Base
+	 */
 
-    if (!XRegExp.addUnicodeData) {
-        throw new ReferenceError('Unicode Base must be loaded before Unicode Scripts');
-    }
+	if (!XRegExp.addUnicodeData)
+	{
+		throw new ReferenceError('Unicode Base must be loaded before Unicode Scripts');
+	}
 
-    XRegExp.addUnicodeData(scripts);
+	XRegExp.addUnicodeData(scripts);
 };

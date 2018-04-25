@@ -88,7 +88,9 @@ function default_1(XRegExp) {
         let leftMatch;
         let rightMatch;
         let esc;
+        // @ts-ignore
         left = XRegExp(left, basicFlags);
+        // @ts-ignore
         right = XRegExp(right, basicFlags);
         if (escapeChar) {
             if (escapeChar.length > 1) {

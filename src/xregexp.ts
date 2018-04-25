@@ -106,7 +106,12 @@ export const registeredFlags = {
  *   skipping some operations like attaching `XRegExp.prototype` properties.
  * @returns {RegExp} Augmented regex.
  */
-export function augment(regex, captureNames: string[], xSource: string, xFlags: string, isInternalOnly?: boolean): XRegExpObject
+export function augment(regex,
+    captureNames: string[],
+    xSource: string,
+    xFlags: string,
+    isInternalOnly?: boolean
+): XRegExpObject
 {
     regex[REGEX_DATA] = {
         captureNames
