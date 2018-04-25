@@ -1,6 +1,32 @@
 /**
  * Created by user on 2018/4/25/025.
  */
+export declare const nativ: {
+    exec: (string: string) => RegExpExecArray;
+    test: (string: string) => boolean;
+    match: {
+        (regexp: string | RegExp): RegExpMatchArray;
+        (matcher: {
+            [Symbol.match](string: string): RegExpMatchArray;
+        }): RegExpMatchArray;
+    };
+    replace: {
+        (searchValue: string | RegExp, replaceValue: string): string;
+        (searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string;
+        (searchValue: {
+            [Symbol.replace](string: string, replaceValue: string): string;
+        }, replaceValue: string): string;
+        (searchValue: {
+            [Symbol.replace](string: string, replacer: (substring: string, ...args: any[]) => string): string;
+        }, replacer: (substring: string, ...args: any[]) => string): string;
+    };
+    split: {
+        (separator: string | RegExp, limit?: number): string[];
+        (splitter: {
+            [Symbol.split](string: string, limit?: number): string[];
+        }, limit?: number): string[];
+    };
+};
 export declare namespace fixed {
     /**
      * Adds named capture support (with backreferences returned as `result.name`), and fixes browser

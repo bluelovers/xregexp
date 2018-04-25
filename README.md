@@ -1,16 +1,32 @@
 # XRegExp 4.1.1
 
-[![Build Status](https://travis-ci.org/slevithan/xregexp.svg?branch=master)](https://travis-ci.org/slevithan/xregexp)
+Fork form [XRegExp](https://github.com/slevithan/xregexp), but remove some support, and allow use native regexp in create new xregexp object
 
-XRegExp provides augmented (and extensible) JavaScript regular expressions. You get modern syntax and flags beyond what browsers support natively. XRegExp is also a regex utility belt with tools to make your grepping and parsing easier, while freeing you from regex cross-browser inconsistencies and other annoyances.
+---
 
-XRegExp supports all native ES6 regular expression syntax. It supports ES5+ browsers, and you can use it with Node.js or as a RequireJS module.
+XRegExp provides augmented (and extensible) JavaScript regular expressions. ~~You get modern syntax and flags beyond what browsers support natively.~~ XRegExp is also a regex utility belt with tools to make your grepping and parsing easier, ~~while freeing you from regex cross-browser inconsistencies and other annoyances.~~
+
+XRegExp supports all native ES6 regular expression syntax. ~~It supports ES5+ browsers, and you can use it with Node.js or as a RequireJS module.~~
+
+## install
+
+```nodemon
+npm install xregexp2
+```
 
 ## Performance
 
 XRegExp compiles to native `RegExp` objects. Therefore regexes built with XRegExp perform just as fast as native regular expressions. There is a tiny extra cost when compiling a pattern for the first time.
 
 ## Usage examples
+
+```ts
+import XRegExp from 'xregexp2';
+import * as XRegExp from 'xregexp2';
+import { XRegExp } from 'xregexp2';
+const XRegExp = require("xregexp2");
+const XRegExp = require("xregexp2").XRegExp;
+```
 
 ```js
 // Using named capture and flag x for free-spacing and line comments

@@ -2,7 +2,7 @@
  * Created by user on 2018/4/25/025.
  */
 
-import { REGEX_DATA, XRegExp } from './xregexp';
+import { REGEX_DATA, XRegExp } from './core';
 
 const toString = Object.prototype.toString;
 

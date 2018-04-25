@@ -1,7 +1,7 @@
 /**
  * Created by user on 2018/4/25/025.
  */
-import { REGEX_DATA } from './xregexp';
+import { REGEX_DATA } from './core';
 export declare class XRegExpObject extends RegExp {
     [REGEX_DATA]: {
         captureNames: string[];

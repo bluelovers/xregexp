@@ -1,9 +1,20 @@
-import XRegExp, { copyRegex, correctExecNpcg, isType } from './xregexp';
-import { nativ, REGEX_DATA, replacementToken, toObject } from './xregexp';
+import { copyRegex, correctExecNpcg, isType } from './core';
+import XRegExp from './xregexp';
+import { REGEX_DATA, replacementToken, toObject } from './core';
 
 /**
  * Created by user on 2018/4/25/025.
  */
+
+// Native methods to use and restore ('native' is an ES3 reserved keyword)
+export const nativ = {
+	exec: RegExp.prototype.exec,
+	test: RegExp.prototype.test,
+	match: String.prototype.match,
+	replace: String.prototype.replace,
+	split: String.prototype.split
+};
+// Storage for fixed/extended native methods
 
 // ==--------------------------==
 // Fixed/extended native methods

@@ -1,10 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const core_1 = require("./core");
 const xregexp_1 = require("./xregexp");
-const xregexp_2 = require("./xregexp");
+const core_2 = require("./core");
 /**
  * Created by user on 2018/4/25/025.
  */
+// Native methods to use and restore ('native' is an ES3 reserved keyword)
+exports.nativ = {
+    exec: RegExp.prototype.exec,
+    test: RegExp.prototype.test,
+    match: String.prototype.match,
+    replace: String.prototype.replace,
+    split: String.prototype.split
+};
+// Storage for fixed/extended native methods
 // ==--------------------------==
 // Fixed/extended native methods
 // ==--------------------------==
@@ -20,19 +30,19 @@ var fixed;
      */
     fixed.exec = function (str) {
         const origLastIndex = this.lastIndex;
-        const match = xregexp_2.nativ.exec.apply(this, arguments);
+        const match = exports.nativ.exec.apply(this, arguments);
         if (match) {
             // Fix browsers whose `exec` methods don't return `undefined` for nonparticipating capturing
             // groups. This fixes IE 5.5-8, but not IE 9's quirks mode or emulation of older IEs. IE 9
             // in standards mode follows the spec.
-            if (!xregexp_1.correctExecNpcg && match.length > 1 && match.includes('')) {
-                const r2 = xregexp_1.copyRegex(this, {
+            if (!core_1.correctExecNpcg && match.length > 1 && match.includes('')) {
+                const r2 = core_1.copyRegex(this, {
                     removeG: true,
                     isInternalOnly: true
                 });
                 // Using `str.slice(match.index)` rather than `match[0]` in case lookahead allowed
                 // matching due to characters outside the match
-                xregexp_2.nativ.replace.call(String(str).slice(match.index), r2, (...args) => {
+                exports.nativ.replace.call(String(str).slice(match.index), r2, (...args) => {
                     const len = args.length;
                     // Skip index 0 and the last 2
                     for (let i = 1; i < len - 2; ++i) {
@@ -49,10 +59,10 @@ var fixed;
                 match.groups = Object.create(null);
                 groupsObject = match.groups;
             }
-            if (this[xregexp_2.REGEX_DATA] && this[xregexp_2.REGEX_DATA].captureNames) {
+            if (this[core_2.REGEX_DATA] && this[core_2.REGEX_DATA].captureNames) {
                 // Skip index 0
                 for (let i = 1; i < match.length; ++i) {
-                    const name = this[xregexp_2.REGEX_DATA].captureNames[i - 1];
+                    const name = this[core_2.REGEX_DATA].captureNames[i - 1];
                     if (name) {
                         groupsObject[name] = match[i];
                     }
@@ -95,12 +105,12 @@ var fixed;
             regex = new RegExp(regex);
         }
         else if (regex.global) {
-            const result = xregexp_2.nativ.match.apply(this, arguments);
+            const result = exports.nativ.match.apply(this, arguments);
             // Fixes IE bug
             regex.lastIndex = 0;
             return result;
         }
-        return fixed.exec.call(regex, xregexp_2.toObject(this));
+        return fixed.exec.call(regex, core_2.toObject(this));
     };
     /**
      * Adds support for `${n}` (or `$<n>`) tokens for named and numbered backreferences in replacement
@@ -121,8 +131,8 @@ var fixed;
         let captureNames;
         let result;
         if (isRegex) {
-            if (search[xregexp_2.REGEX_DATA]) {
-                ({ captureNames } = search[xregexp_2.REGEX_DATA]);
+            if (search[core_2.REGEX_DATA]) {
+                ({ captureNames } = search[core_2.REGEX_DATA]);
             }
             // Only needed if `search` is nonglobal
             origLastIndex = search.lastIndex;
@@ -131,10 +141,10 @@ var fixed;
             search += ''; // Type-convert
         }
         // Don't use `typeof`; some older browsers return 'function' for regex objects
-        if (xregexp_1.isType(replacement, 'Function')) {
+        if (core_1.isType(replacement, 'Function')) {
             // Stringifying `this` fixes a bug in IE < 9 where the last argument in replacement
             // functions isn't type-converted to a string
-            result = xregexp_2.nativ.replace.call(String(this), search, (...args) => {
+            result = exports.nativ.replace.call(String(this), search, (...args) => {
                 if (captureNames) {
                     let groupsObject;
                     if (xregexp_1.default.isInstalled('namespacing')) {
@@ -167,8 +177,8 @@ var fixed;
         else {
             // Ensure that the last value of `args` will be a string when given nonstring `this`,
             // while still throwing on null or undefined context
-            result = xregexp_2.nativ.replace.call(this == null ? this : String(this), search, (...args) => {
-                return xregexp_2.nativ.replace.call(String(replacement), xregexp_2.replacementToken, replacer);
+            result = exports.nativ.replace.call(this == null ? this : String(this), search, (...args) => {
+                return exports.nativ.replace.call(String(replacement), core_2.replacementToken, replacer);
                 function replacer($0, bracketed, angled, dollarToken) {
                     bracketed = bracketed || angled;
                     // Named or numbered backreference with curly or angled braces
@@ -255,7 +265,7 @@ var fixed;
     fixed.split = function (separator, limit) {
         if (!xregexp_1.default.isRegExp(separator)) {
             // Browsers handle nonregex split correctly, so use the faster native method
-            return xregexp_2.nativ.split.apply(this, arguments);
+            return exports.nativ.split.apply(this, arguments);
         }
         const str = String(this);
         const output = [];
@@ -283,7 +293,7 @@ var fixed;
             }
         });
         if (lastLastIndex === str.length) {
-            if (!xregexp_2.nativ.test.call(separator, '') || lastLength) {
+            if (!exports.nativ.test.call(separator, '') || lastLength) {
                 output.push('');
             }
         }
