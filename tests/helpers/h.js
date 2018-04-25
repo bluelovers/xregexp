@@ -1,7 +1,7 @@
 if (typeof global === 'undefined') {
     global = window;
 } else {
-    global.XRegExp = require('../../xregexp-all');
+    global.XRegExp = require('../..');
 }
 
 // Ensure that all opt-in features are disabled when each spec starts
