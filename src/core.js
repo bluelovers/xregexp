@@ -12,6 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * cross-browser inconsistencies.
  */
 const fixed_1 = require("./fixed");
+exports.fixed = fixed_1.fixed;
+exports.nativ = fixed_1.nativ;
 const class_1 = require("./class");
 const xregexp_1 = require("./xregexp");
 exports.XRegExp = xregexp_1.XRegExp;

@@ -3,6 +3,14 @@
  * <xregexp.com>
  * Steven Levithan (c) 2007-present MIT License
  */
+/**
+ * XRegExp provides augmented, extensible regular expressions. You get additional regex syntax and
+ * flags, beyond what browsers support natively. XRegExp is also a regex utility belt with tools to
+ * make your client-side grepping simpler and more powerful, while freeing you from related
+ * cross-browser inconsistencies.
+ */
+import { fixed, nativ } from './fixed';
+export { fixed, nativ };
 import XRegExpObject from './class';
 import { XRegExp } from './xregexp';
 export { XRegExp };
@@ -73,7 +81,7 @@ export declare function clipDuplicates(str: any): any;
  *   - `source` {String} Overrides `<regex>.source`, for special cases.
  * @returns {RegExp} Copy of the provided regex, possibly with modified flags.
  */
-export declare function copyRegex(regex: any, options?: any): any;
+export declare function copyRegex(regex: any, options?: any): XRegExpObject;
 /**
  * Converts hexadecimal to decimal.
  *
@@ -185,7 +193,7 @@ export declare function registerFlag(flag: any): void;
  * @param {Object} context Context object to use for token handler functions.
  * @returns {Object} Object with properties `matchLength`, `output`, and `reparse`; or `null`.
  */
-export declare function runTokens(pattern: any, flags: any, pos: any, scope: any, context: any): any;
+export declare function runTokens(pattern: any, flags: string, pos: number, scope: string, context: any): any;
 /**
  * Enables or disables implicit astral mode opt-in. When enabled, flag A is automatically added to
  * all new regexes created by XRegExp. This causes an error to be thrown when creating regexes if

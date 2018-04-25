@@ -2,7 +2,8 @@
  * Created by user on 2018/4/25/025.
  */
 
-import { REGEX_DATA, XRegExp } from './core';
+import { REGEX_DATA, toObject, XRegExp } from './core';
+import { nativ } from './fixed';
 
 const toString = Object.prototype.toString;
 
@@ -26,6 +27,11 @@ export class XRegExpObject extends RegExp
 	public static isRegExp<T extends RegExp>(value: T): value is T
 	{
 		return toString.call(value) === '[object RegExp]';
+	}
+
+	static escape(str: string)
+	{
+		return nativ.replace.call(toObject(str), /[-\[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 	}
 }
 

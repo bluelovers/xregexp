@@ -271,7 +271,7 @@ exports.XRegExp = XRegExp;
      * XRegExp.escape('Escaped? <.>');
      * // -> 'Escaped\?\ <\.>'
      */
-    XRegExp.escape = (str) => fixed_1.nativ.replace.call(core_1.toObject(str), /[-\[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+    XRegExp.escape = class_1.default.escape;
     /**
      * Executes a regex search in a specified string. Returns a match array or `null`. If the provided
      * regex uses named capture, named backreference properties are included on the match array.
@@ -525,7 +525,9 @@ exports.XRegExp = XRegExp;
      * // -> ['xregexp.com', 'www.google.com']
      */
     XRegExp.matchChain = (str, chain) => (function recurseChain(values, level) {
-        const item = chain[level].regex ? chain[level] : { regex: chain[level] };
+        const item = (chain[level].regex
+            ? chain[level]
+            : { regex: chain[level] });
         const matches = [];
         function addMatch(match) {
             if (item.backref) {
@@ -603,7 +605,9 @@ exports.XRegExp = XRegExp;
      */
     XRegExp.replace = (str, search, replacement, scope) => {
         const isRegex = XRegExp.isRegExp(search);
+        // @ts-ignore
         const global = (search.global && scope !== 'one') || scope === 'all';
+        // @ts-ignore
         const cacheKey = ((global ? 'g' : '') + (search.sticky ? 'y' : '')) || 'noGY';
         let s2 = search;
         if (isRegex) {
@@ -621,8 +625,10 @@ exports.XRegExp = XRegExp;
         }
         // Fixed `replace` required for named backreferences, etc.
         const result = fixed_1.fixed.replace.call(core_1.toObject(str), s2, replacement);
+        // @ts-ignore
         if (isRegex && search.global) {
             // Fixes IE, Safari bug (last tested IE 9, Safari 5.1)
+            // @ts-ignore
             search.lastIndex = 0;
         }
         return result;
@@ -881,6 +887,7 @@ XRegExp.addToken(/\./, () => '[\\s\\S]', {
  */
 XRegExp.addToken(/\\k<([\w$]+)>/, function (match) {
     // Groups with the same name is an error, else would need `lastIndexOf`
+    // @ts-ignore
     const index = isNaN(match[1]) ? (this.captureNames.indexOf(match[1]) + 1) : +match[1];
     const endIndex = match.index + match[0].length;
     if (!index || index > this.captureNames.length) {
@@ -888,7 +895,9 @@ XRegExp.addToken(/\\k<([\w$]+)>/, function (match) {
     }
     // Keep backreferences separate from subsequent literal numbers. This avoids e.g.
     // inadvertedly changing `(?<n>)\k<n>1` to `()\11`.
-    return `\\${index}${endIndex === match.input.length || isNaN(match.input[endIndex]) ?
+    return `\\${index}${
+    // @ts-ignore
+    endIndex === match.input.length || isNaN(match.input[endIndex]) ?
         '' : '(?:)'}`;
 }, { leadChar: '\\' });
 /*
@@ -918,6 +927,7 @@ XRegExp.addToken(/\\(\d+)/, function (match, scope) {
 XRegExp.addToken(/\(\?P?<([\w$]+)>/, function (match) {
     // Disallow bare integers as names because named backreferences are added to match arrays
     // and therefore numeric properties may lead to incorrect lookups
+    // @ts-ignore
     if (!isNaN(match[1])) {
         throw new SyntaxError(`Cannot use integer as capture name ${match[0]}`);
     }

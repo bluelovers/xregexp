@@ -23,7 +23,6 @@ export let regexCache = {};
 // Storage for pattern details cached by the `XRegExp` constructor
 export let patternCache = {};
 
-
 // ==--------------------------==
 // Constructor
 // ==--------------------------==
@@ -175,7 +174,6 @@ export function XRegExp<T extends RegExp>(pattern: string | T, flags?: string, o
 	);
 }
 
-
 export namespace XRegExp
 {
 	// Add `RegExp.prototype` to the prototype chain
@@ -206,6 +204,30 @@ export namespace XRegExp
 	export const _dec = dec;
 	export const _hex = hex;
 	export const _pad4 = pad4;
+
+	export type ITokenScope = 'default' | 'class' | 'all';
+
+	export type ITokenOptions = {
+		scope?: ITokenScope,
+		flag?: string,
+		optionalFlags?: string,
+		reparse?: boolean,
+		leadChar?: string,
+	}
+
+	export interface ITokenHandler
+	{
+		(match: RegExpMatchArray, scope: ITokenScope, flags: string): string
+	}
+
+	export type XRegExpExecArray<T extends {} = any> = RegExpExecArray & {
+		0: string,
+		[n: number]: string,
+		index: number,
+		input: string,
+	} & {
+		[key: string]: string,
+	} & T;
 
 	/**
 	 * Extends XRegExp syntax and allows custom flags. This is used internally and can be used to
@@ -256,7 +278,7 @@ export namespace XRegExp
 	 * XRegExp('a+', 'U').exec('aaa')[0]; // -> 'a'
 	 * XRegExp('a+?', 'U').exec('aaa')[0]; // -> 'aaa'
 	 */
-	export const addToken = (regex, handler, options) =>
+	export const addToken = (regex: RegExp, handler: ITokenHandler, options?: ITokenOptions) =>
 	{
 		options = options || {};
 		let { optionalFlags } = options;
@@ -308,7 +330,7 @@ export namespace XRegExp
  *   // The regex is compiled once only
  * }
 	 */
-	export function cache(pattern: string, flags: string)
+	export function cache(pattern: string, flags?: string)
 	{
 		if (!regexCache[pattern])
 		{
@@ -349,7 +371,7 @@ export namespace XRegExp
 	 * XRegExp.escape('Escaped? <.>');
 	 * // -> 'Escaped\?\ <\.>'
 	 */
-	export const escape = (str) => nativ.replace.call(toObject(str), /[-\[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+	export const escape = XRegExpObject.escape;
 
 	/**
 	 * Executes a regex search in a specified string. Returns a match array or `null`. If the provided
@@ -380,12 +402,12 @@ export namespace XRegExp
  * }
 	 * // result -> ['2', '3', '4']
 	 */
-	export const exec = (str, regex, pos, sticky?: boolean | string) =>
+	export const exec = <T extends {} = any>(str, regex: RegExp, pos?: number, sticky?: boolean | string) =>
 	{
 		let cacheKey = 'g';
 		let addY = false;
 		let fakeY = false;
-		let match;
+		let match: XRegExpExecArray<T>;
 
 		addY = hasNativeY && !!(sticky || (regex.sticky && sticky !== false));
 		if (addY)
@@ -437,6 +459,11 @@ export namespace XRegExp
 		return match;
 	};
 
+	export interface IForEachCallback<T extends RegExp>
+	{
+		(match: XRegExpExecArray, index: number, input: string, regex: T): void
+	}
+
 	/**
 	 * Executes a provided function once per regex match. Searches always start at the beginning of the
 	 * string and continue until the end, regardless of the state of the regex's `global` property and
@@ -459,11 +486,14 @@ export namespace XRegExp
  * });
 	 * // evens -> [2, 4]
 	 */
-	export const forEach = (str, regex, callback) =>
+	export const forEach = <T extends RegExp>(str,
+		regex: T,
+		callback: IForEachCallback<T>,
+	) =>
 	{
 		let pos = 0;
 		let i = -1;
-		let match;
+		let match: XRegExpExecArray;
 
 		while ((match = XRegExp.exec(str, regex, pos)))
 		{
@@ -492,7 +522,9 @@ export namespace XRegExp
 	 * const globalCopy = XRegExp.globalize(/regex/);
 	 * globalCopy.global; // -> true
 	 */
-	export const globalize = (regex) => copyRegex(regex, { addG: true });
+	export const globalize = <T extends RegExp>(regex: T) => copyRegex(regex, { addG: true }) as XRegExpObject & {
+		global: true,
+	};
 
 	/**
 	 * Installs optional features according to the specified options. Can be undone using
@@ -588,7 +620,7 @@ export namespace XRegExp
 	 * XRegExp.match('abc', /\w/, 'all'); // -> ['a', 'b', 'c']
 	 * XRegExp.match('abc', /x/, 'all'); // -> []
 	 */
-	export const match = (str, regex, scope) =>
+	export const match = <T extends RegExp>(str, regex: T, scope?: 'all' | 'one') =>
 	{
 		const global = (regex.global && scope !== 'one') || scope === 'all';
 		const cacheKey = ((global ? 'g' : '') + (regex.sticky ? 'y' : '')) || 'noGY';
@@ -604,7 +636,7 @@ export namespace XRegExp
 			})
 		);
 
-		const result = nativ.match.call(toObject(str), r2);
+		const result: RegExpExecArray = nativ.match.call(toObject(str), r2);
 
 		if (regex.global)
 		{
@@ -615,8 +647,15 @@ export namespace XRegExp
 			);
 		}
 
-		return global ? (result || []) : (result && result[0]);
+		return global ? (result || ([] as string[])) : (result && result[0]);
 	};
+
+	export type IMatchChainItem = {
+		regex: RegExp,
+		backref?,
+	}
+
+	export type IMatchChain = RegExp | IMatchChainItem;
 
 	/**
 	 * Retrieves the matches from searching a string using a chain of regexes that successively search
@@ -646,10 +685,12 @@ export namespace XRegExp
 	 * ]);
 	 * // -> ['xregexp.com', 'www.google.com']
 	 */
-	export const matchChain = (str, chain) => (function recurseChain(values, level)
+	export const matchChain = (str, chain: IMatchChain[]): string[] => (function recurseChain(values, level)
 	{
-		const item = chain[level].regex ? chain[level] : { regex: chain[level] };
-		const matches = [];
+		const item = ((chain[level] as IMatchChainItem).regex
+			? chain[level]
+			: { regex: chain[level] }) as IMatchChainItem;
+		const matches: string[] = [];
 
 		function addMatch(match)
 		{
@@ -738,10 +779,12 @@ export namespace XRegExp
 	 * XRegExp.replace('RegExp builds RegExps', 'RegExp', 'XRegExp', 'all');
 	 * // -> 'XRegExp builds XRegExps'
 	 */
-	export const replace = (str, search, replacement, scope) =>
+	export const replace = (str, search: RegExp | string, replacement, scope?: 'one' | 'all') =>
 	{
 		const isRegex = XRegExp.isRegExp(search);
+		// @ts-ignore
 		const global = (search.global && scope !== 'one') || scope === 'all';
+		// @ts-ignore
 		const cacheKey = ((global ? 'g' : '') + (search.sticky ? 'y' : '')) || 'noGY';
 		let s2 = search;
 
@@ -765,16 +808,25 @@ export namespace XRegExp
 		}
 
 		// Fixed `replace` required for named backreferences, etc.
-		const result = fixed.replace.call(toObject(str), s2, replacement);
+		const result: string = fixed.replace.call(toObject(str), s2, replacement);
 
+		// @ts-ignore
 		if (isRegex && search.global)
 		{
 			// Fixes IE, Safari bug (last tested IE 9, Safari 5.1)
+			// @ts-ignore
 			search.lastIndex = 0;
 		}
 
 		return result;
 	};
+
+	export interface IReplaceEach
+	{
+		0: RegExp | string,
+		1: any,
+		2?: 'all' | 'one',
+	}
 
 	/**
 	 * Performs batch processing of string replacements. Used like `XRegExp.replace`, but accepts an
@@ -799,7 +851,7 @@ export namespace XRegExp
 	 *   [/f/g, ($0) => $0.toUpperCase()]
 	 * ]);
 	 */
-	export const replaceEach = (str, replacements) =>
+	export const replaceEach = (str, replacements: IReplaceEach[]): string =>
 	{
 		for (const r of replacements)
 		{
@@ -835,7 +887,7 @@ export namespace XRegExp
 	 * XRegExp.split('..word1..', /([a-z]+)(\d+)/i);
 	 * // -> ['..', 'word', '1', '..']
 	 */
-	export const split = (str, separator, limit) => fixed.split.call(toObject(str), separator, limit);
+	export const split = (str, separator: RegExp | string, limit?: number): string[] => fixed.split.call(toObject(str), separator, limit);
 
 	/**
 	 * Executes a regex search in a specified string. Returns `true` or `false`. Optional `pos` and
@@ -860,8 +912,8 @@ export namespace XRegExp
 	 * XRegExp.test('abc', /c/, 0, 'sticky'); // -> false
 	 * XRegExp.test('abc', /c/, 2, 'sticky'); // -> true
 	 */
-// Do this the easy way :-)
-	export const test = (str, regex, pos, sticky) => !!XRegExp.exec(str, regex, pos, sticky);
+	// Do this the easy way :-)
+	export const test = (str, regex: RegExp, pos?: number, sticky?: boolean | string) => !!XRegExp.exec(str, regex, pos, sticky);
 
 	/**
 	 * Uninstalls optional features according to the specified options. All optional features start out
@@ -919,7 +971,9 @@ export namespace XRegExp
 	 * XRegExp.union([/man/, /bear/, /pig/], 'i', {conjunction: 'none'});
 	 * // -> /manbearpig/i
 	 */
-	export const union = (patterns, flags, options) =>
+	export const union = (patterns: Array<string | RegExp>, flags?: string, options?: {
+		conjunction?: 'or' | 'none',
+	}) =>
 	{
 		options = options || {};
 		const conjunction = options.conjunction || 'or';
@@ -1098,6 +1152,7 @@ XRegExp.addToken(
 	function (match)
 	{
 		// Groups with the same name is an error, else would need `lastIndexOf`
+		// @ts-ignore
 		const index = isNaN(match[1]) ? (this.captureNames.indexOf(match[1]) + 1) : +match[1];
 		const endIndex = match.index + match[0].length;
 		if (!index || index > this.captureNames.length)
@@ -1107,6 +1162,7 @@ XRegExp.addToken(
 		// Keep backreferences separate from subsequent literal numbers. This avoids e.g.
 		// inadvertedly changing `(?<n>)\k<n>1` to `()\11`.
 		return `\\${index}${
+			// @ts-ignore
 			endIndex === match.input.length || isNaN(match.input[endIndex]) ?
 				'' : '(?:)'
 			}`;
@@ -1155,6 +1211,7 @@ XRegExp.addToken(
 	{
 		// Disallow bare integers as names because named backreferences are added to match arrays
 		// and therefore numeric properties may lead to incorrect lookups
+		// @ts-ignore
 		if (!isNaN(match[1]))
 		{
 			throw new SyntaxError(`Cannot use integer as capture name ${match[0]}`);

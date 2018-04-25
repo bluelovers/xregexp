@@ -13,7 +13,7 @@ export type XRegExpBuildSub = {
 
 export type XRegExpExtend<T extends typeof _XRegExp> = T & {
     tag(flags: string): XRegExpObject,
-    build(pattern: string, subs: XRegExpBuildSub, flags: string): XRegExpObject,
+    build(pattern: string, subs: XRegExpBuildSub, flags?: string): XRegExpObject,
 }
 
 export default function <T extends typeof _XRegExp = typeof _XRegExp>(XRegExp: T | XRegExpExtend<T>)

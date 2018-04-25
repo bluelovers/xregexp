@@ -4,6 +4,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("./core");
+const fixed_1 = require("./fixed");
 const toString = Object.prototype.toString;
 class XRegExpObject extends RegExp {
     static isXRegExpObject(value) {
@@ -11,6 +12,9 @@ class XRegExpObject extends RegExp {
     }
     static isRegExp(value) {
         return toString.call(value) === '[object RegExp]';
+    }
+    static escape(str) {
+        return fixed_1.nativ.replace.call(core_1.toObject(str), /[-\[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
     }
 }
 exports.XRegExpObject = XRegExpObject;

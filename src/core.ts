@@ -12,6 +12,8 @@
  */
 
 import { fixed, nativ } from './fixed';
+export { fixed, nativ }
+
 import XRegExpObject from './class';
 
 import { XRegExp } from './xregexp';
@@ -167,7 +169,7 @@ export function clipDuplicates(str)
  *   - `source` {String} Overrides `<regex>.source`, for special cases.
  * @returns {RegExp} Copy of the provided regex, possibly with modified flags.
  */
-export function copyRegex(regex, options?)
+export function copyRegex(regex, options?): XRegExpObject
 {
     if (!XRegExpObject.isRegExp(regex))
     {
@@ -479,7 +481,7 @@ export function registerFlag(flag)
  * @param {Object} context Context object to use for token handler functions.
  * @returns {Object} Object with properties `matchLength`, `output`, and `reparse`; or `null`.
  */
-export function runTokens(pattern, flags, pos, scope, context)
+export function runTokens(pattern, flags: string, pos: number, scope: string, context)
 {
     let i = tokens.length;
     const leadChar = pattern[pos];

@@ -12,5 +12,6 @@ export declare class XRegExpObject extends RegExp {
     static isXRegExpObject<T extends XRegExpObject>(value: any): value is T;
     static isRegExp<T extends RegExp>(value: T): value is T;
     static isRegExp<T extends RegExp>(value: any): value is T;
+    static escape(str: string): any;
 }
 export default XRegExpObject;
