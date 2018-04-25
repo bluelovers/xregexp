@@ -3,6 +3,7 @@
  * <xregexp.com>
  * Steven Levithan (c) 2007-present MIT License
  */
+import XRegExpObject from './class';
 export declare const REGEX_DATA = "xregexp";
 export declare const features: {
     astral: boolean;
@@ -70,7 +71,7 @@ export declare const registeredFlags: {
  *   skipping some operations like attaching `XRegExp.prototype` properties.
  * @returns {RegExp} Augmented regex.
  */
-export declare function augment(regex: any, captureNames: any, xSource: any, xFlags: any, isInternalOnly?: boolean): any;
+export declare function augment(regex: any, captureNames: string[], xSource: string, xFlags: string, isInternalOnly?: boolean): XRegExpObject;
 /**
  * Removes any duplicate characters from the provided string.
  *
@@ -270,7 +271,7 @@ export declare function toObject(value: any): any;
  * // have fresh `lastIndex` properties (set to zero).
  * XRegExp(/regex/);
  */
-export declare function XRegExp(pattern: any, flags?: string): any;
+export declare function XRegExp<T extends RegExp>(pattern: string | T, flags?: string): XRegExpObject;
 export declare namespace XRegExp {
     const prototype: RegExp;
     /**
@@ -483,7 +484,7 @@ export declare namespace XRegExp {
      * XRegExp.isRegExp(RegExp('^', 'm')); // -> true
      * XRegExp.isRegExp(XRegExp('(?s).')); // -> true
      */
-    const isRegExp: (value: any) => boolean;
+    const isRegExp: typeof XRegExpObject.isRegExp;
     /**
      * Returns the first matched string, or in global mode, an array containing all matched strings.
      * This is essentially a more convenient re-implementation of `String.prototype.match` that gives
@@ -704,6 +705,6 @@ export declare namespace XRegExp {
      * XRegExp.union([/man/, /bear/, /pig/], 'i', {conjunction: 'none'});
      * // -> /manbearpig/i
      */
-    const union: (patterns: any, flags: any, options: any) => any;
+    const union: (patterns: any, flags: any, options: any) => XRegExpObject;
 }
 export default XRegExp;

@@ -12,6 +12,7 @@
  */
 
 import { fixed } from './fixed';
+import XRegExpObject from './class';
 
 // ==--------------------------==
 // Private stuff
@@ -105,7 +106,7 @@ export const registeredFlags = {
  *   skipping some operations like attaching `XRegExp.prototype` properties.
  * @returns {RegExp} Augmented regex.
  */
-export function augment(regex, captureNames, xSource, xFlags, isInternalOnly?: boolean)
+export function augment(regex, captureNames: string[], xSource: string, xFlags: string, isInternalOnly?: boolean): XRegExpObject
 {
     regex[REGEX_DATA] = {
         captureNames
@@ -600,9 +601,14 @@ export function toObject(value)
  * // have fresh `lastIndex` properties (set to zero).
  * XRegExp(/regex/);
  */
-export function XRegExp(pattern, flags?: string)
+export function XRegExp<T extends RegExp>(pattern: string | T, flags?: string): XRegExpObject
 {
-    if (XRegExp.isRegExp(pattern))
+    if (XRegExpObject.isRegExp(pattern) && !XRegExpObject.isXRegExpObject(pattern))
+    {
+        flags = typeof flags == 'string' ? flags : pattern.flags;
+        pattern = pattern.source;
+    }
+    else if (XRegExpObject.isRegExp(pattern))
     {
         if (flags !== undefined)
         {
@@ -1085,7 +1091,7 @@ export namespace XRegExp
      * XRegExp.isRegExp(RegExp('^', 'm')); // -> true
      * XRegExp.isRegExp(XRegExp('(?s).')); // -> true
      */
-    export const isRegExp = (value) => toString.call(value) === '[object RegExp]'; // isType(value, 'RegExp');
+    export const isRegExp: typeof XRegExpObject.isRegExp = (value) => toString.call(value) === '[object RegExp]'; // isType(value, 'RegExp');
 
     /**
      * Returns the first matched string, or in global mode, an array containing all matched strings.

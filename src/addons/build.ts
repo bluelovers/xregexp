@@ -5,14 +5,15 @@
  */
 
 import _XRegExp from '../xregexp';
+import XRegExpObject from '../class';
 
 export type XRegExpBuildSub = {
     [key: string]: string | RegExp,
 }
 
 export type XRegExpExtend<T extends typeof _XRegExp> = T & {
-    tag(flags: string): XRegExpExtend<T>,
-    build(pattern: string, subs: XRegExpBuildSub, flags: string): XRegExpExtend<T>,
+    tag(flags: string): XRegExpObject,
+    build(pattern: string, subs: XRegExpBuildSub, flags: string): XRegExpObject,
 }
 
 export default function <T extends typeof _XRegExp = typeof _XRegExp>(XRegExp: T | XRegExpExtend<T>)

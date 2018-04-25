@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * cross-browser inconsistencies.
  */
 const fixed_1 = require("./fixed");
+const class_1 = require("./class");
 // ==--------------------------==
 // Private stuff
 // ==--------------------------==
@@ -517,7 +518,11 @@ exports.toObject = toObject;
  * XRegExp(/regex/);
  */
 function XRegExp(pattern, flags) {
-    if (XRegExp.isRegExp(pattern)) {
+    if (class_1.default.isRegExp(pattern) && !class_1.default.isXRegExpObject(pattern)) {
+        flags = typeof flags == 'string' ? flags : pattern.flags;
+        pattern = pattern.source;
+    }
+    else if (class_1.default.isRegExp(pattern)) {
         if (flags !== undefined) {
             throw new TypeError('Cannot supply flags when copying a RegExp');
         }
